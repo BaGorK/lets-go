@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"runtime"
+	"time"
 )
 
 func add(x int, y int) int {
@@ -37,4 +39,58 @@ func main() {
 
 	c, python, java := true, false, "no!" // Multiple assignment
 	fmt.Println(c, python, java)
+
+	// For loop example
+	sum := 0
+	for i := 0; i <= 100; i++ {
+		sum += 1
+	}
+	fmt.Println("The sum of numbers from 0 to 100 is:", sum)
+	// While loop example
+	whileSum := 0
+	for whileSum < 10 {
+		whileSum += 1
+	}
+	fmt.Println("The while loop sum is:", whileSum)
+
+	// If statement example
+	if sum > 50 {
+		fmt.Println("The sum is greater than 50")
+	} else if sum == 50 {
+		fmt.Println("The sum is equal to 50")
+	} else {
+		fmt.Println("The sum is less than 50")
+	}
+
+	// If statement with short variable declaration
+	if os := runtime.GOOS; os == "linux" {
+		fmt.Println("Running on Linux")
+	} else {
+		fmt.Printf("Not running on Linux, running on %s\n", os)
+	}
+
+	// Switch statement example
+	switch os := runtime.GOOS; os {
+	case "darwin":
+		fmt.Println("OS X")
+	case "linux":
+		fmt.Println("Linux")
+	case "windows":
+		fmt.Println("Windows")
+	default:
+		fmt.Printf("%s.\n", os)
+	}
+
+	// Switch with no condition
+	//  Switch without a condition is the same as switch true.
+	// This construct can be a clean way to write long if-then-else chains.
+	t := time.Now()
+	switch {
+	case t.Hour() < 12:
+		fmt.Println("It's before noon.")
+	case t.Hour() < 17:
+		fmt.Println("It's afternoon.")
+	default:
+		fmt.Println("It's evening.")
+	}
 }
