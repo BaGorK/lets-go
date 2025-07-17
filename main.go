@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// Switch with no condition
-	//  Switch without a condition is the same as switch true.
+	// Switch without a condition is the same as switch true.
 	// This construct can be a clean way to write long if-then-else chains.
 	t := time.Now()
 	switch {
@@ -93,4 +93,19 @@ func main() {
 	default:
 		fmt.Println("It's evening.")
 	}
+
+	// time
+	fmt.Println(time.Now().Year())    // 2025
+	fmt.Println(time.Now().Month())   // July
+	fmt.Println(time.Now().Weekday()) // Wednesday
+	fmt.Println(time.Now().Hour())    // 19
+	fmt.Println(time.Now().Minute())  // 30
+	fmt.Println(time.Now().Second())  // 17
+	fmt.Println(time.Now().Clock())   // 19 30 17
+	fmt.Println(time.Now().Local())   // 2025-07-16 19:30:17.156561984 +0300 EAT
+	fmt.Println(time.Now().Date())    // 2025 July 16
+	fmt.Println(time.TimeOnly)        // 15:04:05
+
+	// calculator application
+	calc()
 }
