@@ -1,10 +1,10 @@
 package prices
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
+
+	"github.com/BaGorK/lets-go/price-calc/conversion"
+	"github.com/BaGorK/lets-go/price-calc/filemanager"
 )
 
 type TaxIncludedPriceJob struct {
@@ -14,44 +14,16 @@ type TaxIncludedPriceJob struct {
 }
 
 func (job *TaxIncludedPriceJob) LoadData() {
-	file, err := os.Open("prices.txt")
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return
-	}
-
-	scanner := bufio.NewScanner(file)
-
-	var lines []string
-
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-
-	err = scanner.Err()
+	lines, err := filemanager.ReadLines("prices.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-		err := file.Close()
-		if err != nil {
-			fmt.Println("Error closing file:", err)
-			return
-		}
 		return
 	}
 
-	prices := make([]float64, len(lines))
-	for i, line := range lines {
-		floatPrice, err := strconv.ParseFloat(line, 64)
-		if err != nil {
-			fmt.Println("Error parsing price:", err)
-			err := file.Close()
-			if err != nil {
-				fmt.Println("Error closing file:", err)
-			}
-			return
-		}
-
-		prices[i] = floatPrice
+	prices, err := conversion.StringsToFloats(lines)
+	if err != nil {
+		fmt.Println("Error parsing price:", err)
+		return
 	}
 
 	job.InputPrices = prices
