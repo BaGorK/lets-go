@@ -4,33 +4,38 @@ import (
 	"fmt"
 
 	"github.com/BaGorK/lets-go/price-calc/conversion"
-	"github.com/BaGorK/lets-go/price-calc/filemanager"
+	"github.com/BaGorK/lets-go/price-calc/iomanager"
 )
 
 type TaxIncludedPriceJob struct {
+	IOManager         iomanager.IOManager
 	TaxRate           float64
 	InputPrices       []float64
 	TaxIncludedPrices map[string]string
 }
 
-func (job *TaxIncludedPriceJob) LoadData() {
-	lines, err := filemanager.ReadLines("prices.txt")
+func (job *TaxIncludedPriceJob) LoadData() error {
+	lines, err := job.IOManager.ReadLines()
 	if err != nil {
 		fmt.Println("Error reading file:", err)
-		return
+		return err
 	}
 
 	prices, err := conversion.StringsToFloats(lines)
 	if err != nil {
 		fmt.Println("Error parsing price:", err)
-		return
+		return err
 	}
 
 	job.InputPrices = prices
+	return nil
 }
 
-func (job *TaxIncludedPriceJob) Process() {
-	job.LoadData()
+func (job *TaxIncludedPriceJob) Process() error {
+	err := job.LoadData()
+	if err != nil {
+		return err
+	}
 	result := make(map[string]string)
 
 	for _, price := range job.InputPrices {
@@ -39,15 +44,12 @@ func (job *TaxIncludedPriceJob) Process() {
 
 	job.TaxIncludedPrices = result
 
-	err := filemanager.WriteJSON(fmt.Sprintf("result_%.0f.json", job.TaxRate*100), job)
-	if err != nil {
-		fmt.Println("Error writing results to file:", err)
-		return
-	}
+	return job.IOManager.WriteJSON(job)
 }
 
-func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
+func NewTaxIncludedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxIncludedPriceJob {
 	return &TaxIncludedPriceJob{
+		IOManager:   iom,
 		InputPrices: []float64{},
 		TaxRate:     taxRate,
 	}

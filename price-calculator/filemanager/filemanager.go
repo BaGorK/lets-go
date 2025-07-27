@@ -7,10 +7,15 @@ import (
 	"os"
 )
 
-func ReadLines(path string) ([]string, error) {
-	file, err := os.Open(path)
+type Filemanager struct {
+	InputFilePath  string
+	OutputFilePath string
+}
+
+func (fm Filemanager) ReadLines() ([]string, error) {
+	file, err := os.Open(fm.InputFilePath)
 	if err != nil {
-		return nil, errors.New("error opening file: " + path)
+		return nil, errors.New("error opening file: " + fm.InputFilePath)
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -25,23 +30,23 @@ func ReadLines(path string) ([]string, error) {
 	if err != nil {
 		err := file.Close()
 		if err != nil {
-			return nil, errors.New("error closing file: " + path)
+			return nil, errors.New("error closing file: " + fm.InputFilePath)
 		}
-		return nil, errors.New("error reading file: " + path)
+		return nil, errors.New("error reading file: " + fm.InputFilePath)
 	}
 
 	err = file.Close()
 	if err != nil {
-		return nil, errors.New("error closing file: " + path)
+		return nil, errors.New("error closing file: " + fm.InputFilePath)
 	}
 
 	return lines, nil
 }
 
-func WriteJSON(path string, data interface{}) error {
-	file, err := os.Create(path)
+func (fm Filemanager) WriteJSON(data interface{}) error {
+	file, err := os.Create(fm.OutputFilePath)
 	if err != nil {
-		return errors.New("error creating file: " + path)
+		return errors.New("error creating file: " + fm.OutputFilePath)
 	}
 
 	encoder := json.NewEncoder(file)
@@ -49,14 +54,14 @@ func WriteJSON(path string, data interface{}) error {
 	if err != nil {
 		errClose := file.Close()
 		if errClose != nil {
-			return errors.New("error closing file: " + path)
+			return errors.New("error closing file: " + fm.OutputFilePath)
 		}
-		return errors.New("error writing to file: " + path)
+		return errors.New("error writing to file: " + fm.OutputFilePath)
 	}
 
 	err = file.Close()
 	if err != nil {
-		return errors.New("error closing file: " + path)
+		return errors.New("error closing file: " + fm.OutputFilePath)
 	}
 
 	return nil
