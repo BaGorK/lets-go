@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/BaGorK/lets-go/rest-api/db"
 	"github.com/BaGorK/lets-go/rest-api/models"
@@ -15,6 +16,7 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/events", getEvents)
+	router.GET("/events/:id", getEvent)
 	router.POST("/events", createEvent)
 
 	router.Run()
@@ -27,6 +29,22 @@ func getEvents(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, events)
+}
+
+func getEvent(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid event ID"})
+		return
+	}
+
+	event, err := models.GetEventById(id)
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"error": "Event not found"})
+		return
+	}
+
+	context.JSON(http.StatusOK, event)
 }
 
 func createEvent(context *gin.Context) {
