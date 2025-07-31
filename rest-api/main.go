@@ -3,11 +3,15 @@ package main
 import (
 	"net/http"
 
+	"github.com/BaGorK/lets-go/rest-api/db"
 	"github.com/BaGorK/lets-go/rest-api/models"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// Initialize the database connection
+	db.InitDB()
+
 	router := gin.Default()
 
 	router.GET("/events", getEvents)
