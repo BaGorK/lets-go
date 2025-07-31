@@ -17,7 +17,7 @@ type Event struct {
 
 var events = []Event{}
 
-func (e *Event) Save() error {
+func (e *Event) CreateEvent() error {
 	query := `
 	insert into events (name, description, location, datetime, user_id)
 	values (?, ?, ?, ?, ?)
@@ -72,4 +72,22 @@ func GetEventById(id int64) (*Event, error) {
 	}
 
 	return &event, nil
+}
+
+func (e *Event) UpdateEvent() error {
+	query := `
+	update events
+	set name = ?, description = ?, location = ?, datetime = ?, user_id = ?
+	where id = ?
+	`
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserId, e.Id)
+	return err
 }
