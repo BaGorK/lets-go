@@ -1,6 +1,9 @@
 package models
 
-import "github.com/BaGorK/lets-go/rest-api/db"
+import (
+	"github.com/BaGorK/lets-go/rest-api/db"
+	"github.com/BaGorK/lets-go/rest-api/utils"
+)
 
 type User struct {
 	ID       int64
@@ -17,8 +20,13 @@ func (user *User) CreateUser() error {
 		return err
 	}
 
+	hashedPass, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
 	defer stmt.Close()
-	result, err := stmt.Exec(user.Email, user.Password)
+	result, err := stmt.Exec(user.Email, hashedPass)
 	if err != nil {
 		return err
 	}
