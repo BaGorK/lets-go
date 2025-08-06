@@ -1,3 +1,4 @@
+// Package main implements the main entry point for the REST API application.
 package main
 
 import (

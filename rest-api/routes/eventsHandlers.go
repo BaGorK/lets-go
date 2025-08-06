@@ -1,3 +1,4 @@
+// Package routes provides the HTTP handlers for managing events in the API.
 package routes
 
 import (
@@ -24,7 +25,7 @@ func getEvent(context *gin.Context) {
 		return
 	}
 
-	event, err := models.GetEventById(id)
+	event, err := models.GetEventByID(id)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Event not found"})
 		return
@@ -60,7 +61,7 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventById(id)
+	_, err = models.GetEventByID(id)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Event not found"})
 		return
@@ -73,7 +74,7 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	updatedEvent.Id = id
+	updatedEvent.ID = id
 	err = updatedEvent.UpdateEvent()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Could not update event"})
@@ -90,7 +91,7 @@ func deleteEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventById(id)
+	_, err = models.GetEventByID(id)
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Event not found"})
 		return
